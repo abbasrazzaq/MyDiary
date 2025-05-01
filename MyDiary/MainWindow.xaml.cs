@@ -9,6 +9,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+/*
+ *  TODO:
+ *      - Have two views
+ *          1 - For seeing a list of entries
+ *          2 - For adding an entry
+ */
 
 namespace MyDiary
 {
@@ -45,10 +51,6 @@ namespace MyDiary
             db.Add(new Diary { DiaryText = textRange.Text, DiaryDate = diaryDate });
             db.SaveChangesAsync();
 
-            // Read - DEBUGGING
-            var diary = db.DiaryEntries
-                .OrderBy(b => b.DiaryId)
-                .Last();
 
             //if (!string.IsNullOrWhiteSpace(txtName.Text) && !lstNames.Items.Contains(txtName.Text))
             //{

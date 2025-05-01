@@ -9,29 +9,47 @@
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="10" Height="10" Fill="DarkGray" />
+                        <TextBlock>Add Diary</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <StackPanel>
+                    <RichTextBox x:Name="txtDiaryEntry" Height="Auto" />
+                    <!--<TextBlock>Enter some text</TextBlock>
+                    <TextBox Name="textBox1" Width="50" />-->
+
+                    <Button x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
+                    <DatePicker x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Tab 2">
+                <!--<TextBlock Text="{Binding ElementName=textBox1, Path=Text}" />-->
+            </TabItem>
+            
+        </TabControl>        
         <!-- <Label Grid.Column="0">Names</Label> -->
         <!-- <ListBox Grid.Row="1" x:Name="lstNames" /> -->
 
-        <RichTextBox x:Name="txtDiaryEntry" Grid.Row="1" Grid.Column="0" Height="Auto">
-        </RichTextBox>
+        <!--<RichTextBox x:Name="txtDiaryEntry" Grid.Row="1" Grid.Column="0" Height="Auto">
+        </RichTextBox>-->
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
-            <!-- <TextBox x:Name="txtName" /> -->
+        <!--<StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
+            --><!-- <TextBox x:Name="txtName" /> --><!--
             <Button x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-
-            
-            
             <DatePicker x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
-        </StackPanel>
+        </StackPanel>-->
 
     </Grid>
 </Window>
