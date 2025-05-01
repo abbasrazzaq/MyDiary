@@ -24,32 +24,27 @@
                         <TextBlock>Add Diary</TextBlock>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel>
-                    <RichTextBox x:Name="txtDiaryEntry" Height="Auto" />
-                    <!--<TextBlock>Enter some text</TextBlock>
-                    <TextBox Name="textBox1" Width="50" />-->
 
-                    <Button x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-                    <DatePicker x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                </StackPanel>
+                    <Button Grid.Row="2" x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
+                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
+
+                    <RichTextBox Grid.Row="1" x:Name="txtDiaryEntry" Height="Auto" />
+
+                </Grid>
+                
             </TabItem>
             <TabItem Header="Tab 2">
                 <!--<TextBlock Text="{Binding ElementName=textBox1, Path=Text}" />-->
             </TabItem>
-            
-        </TabControl>        
-        <!-- <Label Grid.Column="0">Names</Label> -->
-        <!-- <ListBox Grid.Row="1" x:Name="lstNames" /> -->
 
-        <!--<RichTextBox x:Name="txtDiaryEntry" Grid.Row="1" Grid.Column="0" Height="Auto">
-        </RichTextBox>-->
-
-        <!--<StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
-            --><!-- <TextBox x:Name="txtName" /> --><!--
-            <Button x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-            <DatePicker x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
-        </StackPanel>-->
+        </TabControl>
 
     </Grid>
 </Window>
