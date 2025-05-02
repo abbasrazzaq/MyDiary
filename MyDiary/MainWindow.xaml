@@ -51,8 +51,11 @@
                 <ListView ItemsSource="{Binding PreviousEntries}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding DiaryDate}" />
+                                <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
+                                    Delete Entry
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

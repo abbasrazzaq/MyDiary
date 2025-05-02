@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,9 +13,10 @@ using System.Windows.Shapes;
 
 /*
  *  TODO:
- *      - Have two views
- *          1 - For seeing a list of entries
- *          2 - For adding an entry
+ *      - Double click an entry to view it
+ *          - Can update text
+ *          - Can delete
+ *          - Can't change date
  */
 
 namespace MyDiary
@@ -25,29 +28,42 @@ namespace MyDiary
     {
         private DiaryContext db = new DiaryContext();
 
-        public List<DiaryEntryListItem> PreviousEntries { get; set; }
+        //public List<DiaryEntryListItem> PreviousEntries { get; set; }
+
+        private ObservableCollection<DiaryEntryListItem> _previousEntries;
+        public ObservableCollection<DiaryEntryListItem> PreviousEntries
+        {
+            get => _previousEntries;
+            set
+            {
+                _previousEntries = value;
+                OnPropertyChanged(nameof(PreviousEntries));
+            }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = this;
 
             dateDiaryEntry.SelectedDate = DateTime.Now;
             txtDiaryEntry.AppendText("Dear Diary,\n");
             txtDiaryEntry.Focus();
             txtDiaryEntry.CaretPosition = txtDiaryEntry.Document.ContentEnd;
 
-            // Read - DEBUGGING
-            /*var diary = db.DiaryEntries
-                .OrderBy(b => b.DiaryId)
-                .Last();*/
-            PreviousEntries =
+            loadDiaryEntries();
+
+        }
+
+        private void loadDiaryEntries()
+        {
+            PreviousEntries = new ObservableCollection<DiaryEntryListItem>(
                 db.DiaryEntries
                 .OrderByDescending(b => b.DiaryDate)
                 .Select(x => new DiaryEntryListItem { DiaryId = x.DiaryId, DiaryDate = x.DiaryDate })
-                .ToList();
-
-            DataContext = this;
-
+                .ToList()
+                );
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -62,16 +78,37 @@ namespace MyDiary
                 diaryDate = dateDiaryEntry.SelectedDate.Value;
             }
 
-            // Create
-            db.Add(new Diary { DiaryText = textRange.Text, DiaryDate = diaryDate });
+            // Add diary entry
+            var newEntry = new Diary { DiaryText = textRange.Text, DiaryDate = diaryDate };
+            db.Add(newEntry);
             db.SaveChangesAsync();
 
-
-            //if (!string.IsNullOrWhiteSpace(txtName.Text) && !lstNames.Items.Contains(txtName.Text))
-            //{
-            //    lstNames.Items.Add(txtName.Text);
-            //    txtName.Clear();
-            //}
+            PreviousEntries.Insert(0, new DiaryEntryListItem { DiaryId = newEntry.DiaryId, DiaryDate = newEntry.DiaryDate });
         }
+
+        private void deleteEntryBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if(sender is Button btn && btn.Tag is int diaryId)
+            {
+                var entryToDelete = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
+                if(entryToDelete != null)
+                {
+                    db.DiaryEntries.Remove(entryToDelete);
+                    db.SaveChanges();
+
+                    var itemToRemove = PreviousEntries.FirstOrDefault(i => i.DiaryId == diaryId);
+                    if(itemToRemove != null)
+                    {
+                        PreviousEntries.Remove(itemToRemove);
+                    }
+
+                }
+
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
