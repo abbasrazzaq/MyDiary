@@ -15,7 +15,6 @@ using System.Windows.Shapes;
  *  TODO:
  *      - Double click an entry to view it
  *          - Can update text
- *          - Can delete
  *          - Can't change date
  */
 
@@ -27,8 +26,6 @@ namespace MyDiary
     public partial class MainWindow : Window
     {
         private DiaryContext db = new DiaryContext();
-
-        //public List<DiaryEntryListItem> PreviousEntries { get; set; }
 
         private ObservableCollection<DiaryEntryListItem> _previousEntries;
         public ObservableCollection<DiaryEntryListItem> PreviousEntries
@@ -47,13 +44,19 @@ namespace MyDiary
 
             DataContext = this;
 
+            resetDiaryEntryUI();
+            loadDiaryEntries();
+
+        }
+
+        private void resetDiaryEntryUI()
+        {
             dateDiaryEntry.SelectedDate = DateTime.Now;
+
+            txtDiaryEntry.Document.Blocks.Clear();
             txtDiaryEntry.AppendText("Dear Diary,\n");
             txtDiaryEntry.Focus();
             txtDiaryEntry.CaretPosition = txtDiaryEntry.Document.ContentEnd;
-
-            loadDiaryEntries();
-
         }
 
         private void loadDiaryEntries()
@@ -84,6 +87,9 @@ namespace MyDiary
             db.SaveChangesAsync();
 
             PreviousEntries.Insert(0, new DiaryEntryListItem { DiaryId = newEntry.DiaryId, DiaryDate = newEntry.DiaryDate });
+
+            MessageBox.Show("Diary entry added!", "Notification");
+            resetDiaryEntryUI();
         }
 
         private void deleteEntryBtn_Click(object sender, RoutedEventArgs e)
