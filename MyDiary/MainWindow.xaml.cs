@@ -23,7 +23,9 @@ namespace MyDiary
     /// </summary>
     public partial class MainWindow : Window
     {
-        DiaryContext db = new DiaryContext();
+        private DiaryContext db = new DiaryContext();
+
+        public List<DiaryEntryListItem> PreviousEntries { get; set; }
 
         public MainWindow()
         {
@@ -33,6 +35,19 @@ namespace MyDiary
             txtDiaryEntry.AppendText("Dear Diary,\n");
             txtDiaryEntry.Focus();
             txtDiaryEntry.CaretPosition = txtDiaryEntry.Document.ContentEnd;
+
+            // Read - DEBUGGING
+            /*var diary = db.DiaryEntries
+                .OrderBy(b => b.DiaryId)
+                .Last();*/
+            PreviousEntries =
+                db.DiaryEntries
+                .OrderByDescending(b => b.DiaryDate)
+                .Select(x => new DiaryEntryListItem { DiaryId = x.DiaryId, DiaryDate = x.DiaryDate })
+                .ToList();
+
+            DataContext = this;
+
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)

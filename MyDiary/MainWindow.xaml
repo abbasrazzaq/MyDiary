@@ -21,7 +21,7 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="10" Height="10" Fill="DarkGray" />
-                        <TextBlock>Add Diary</TextBlock>
+                        <TextBlock>New Diary</TextBlock>
                     </StackPanel>
                 </TabItem.Header>
 
@@ -40,8 +40,24 @@
                 </Grid>
                 
             </TabItem>
-            <TabItem Header="Tab 2">
-                <!--<TextBlock Text="{Binding ElementName=textBox1, Path=Text}" />-->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="10" Height="10" Fill="DarkBlue" />
+                        <TextBlock>Previous Entries</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <ListView ItemsSource="{Binding PreviousEntries}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding DiaryDate}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
             </TabItem>
 
         </TabControl>
