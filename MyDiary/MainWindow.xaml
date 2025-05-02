@@ -56,11 +56,41 @@
                                 <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
                                     Delete Entry
                                 </Button>
+                                <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
+                                    View / Edit Entry
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
                 
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="10" Height="10" Fill="DarkGreen" />
+                        <TextBlock>Edit Entry</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Width="Auto">
+                        <Button x:Name="btnUpdate" Margin="0,5,0,0" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
+                        <Button x:Name="btnCancelUpdate" Margin="0,5,0,0" Click="btnCancelUpdate_Click" Width="*">Cancel</Button>
+                    </StackPanel>
+                    
+                    <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />
+
+                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" />
+
+                </Grid>
+
             </TabItem>
 
         </TabControl>

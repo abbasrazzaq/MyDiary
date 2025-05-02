@@ -16,6 +16,16 @@ using System.Windows.Shapes;
  *      - Double click an entry to view it
  *          - Can update text
  *          - Can't change date
+ *          
+ *      - Search 
+ *      - Paging
+ *      - Private/Public
+ *          - Password
+ *      
+ *     - Edit Diary Entry
+ *      - Date (readonly)
+ *      - Text box
+ *      - Update & Cancel buttons (with "Are you sure?")
  */
 
 namespace MyDiary
@@ -116,5 +126,20 @@ namespace MyDiary
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private void viewEditEntryBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnCancelUpdate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
