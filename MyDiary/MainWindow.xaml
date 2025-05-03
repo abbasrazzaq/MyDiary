@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
+        <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -65,7 +65,7 @@
                 </ListView>
                 
             </TabItem>
-            <TabItem>
+            <TabItem x:Name="editDiaryTabItem">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="10" Height="10" Fill="DarkGreen" />
@@ -82,7 +82,7 @@
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Width="Auto">
                         <Button x:Name="btnUpdate" Margin="0,5,0,0" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
-                        <Button x:Name="btnCancelUpdate" Margin="0,5,0,0" Click="btnCancelUpdate_Click" Width="*">Cancel</Button>
+                        <Button x:Name="btnCancelUpdate" Margin="0,5,0,0" Click="btnCancelUpdate_Click" Width="Auto">Cancel</Button>
                     </StackPanel>
                     
                     <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />

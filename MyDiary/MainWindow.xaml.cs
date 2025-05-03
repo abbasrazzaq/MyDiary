@@ -26,6 +26,8 @@ using System.Windows.Shapes;
  *      - Date (readonly)
  *      - Text box
  *      - Update & Cancel buttons (with "Are you sure?")
+ *      
+ *      - Move db stuff to a data layer (out of the code behind)
  */
 
 namespace MyDiary
@@ -117,7 +119,6 @@ namespace MyDiary
                     {
                         PreviousEntries.Remove(itemToRemove);
                     }
-
                 }
 
             }
@@ -129,12 +130,46 @@ namespace MyDiary
 
         private void viewEditEntryBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (sender is Button btn && btn.Tag is int diaryId)
+            {
+                var entryToEdit = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
+                if(entryToEdit != null)
+                {
+                    // Setup data in the edit tab
+                    dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
 
+                    updateTxtDiaryEntry.Document.Blocks.Clear();
+                    updateTxtDiaryEntry.AppendText(entryToEdit.DiaryText);
+                    updateTxtDiaryEntry.Focus();
+                    updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
+
+                    // TODO: Store id somewhere for the tab to use on Update click
+                    btnUpdate.Tag = entryToEdit.DiaryId;
+
+                    // Switch tab
+                    DiaryTabs.SelectedItem = editDiaryTabItem;
+                }
+                else
+                {
+                    // TODO: What if we can't find it for some reason?
+                    // Error message box and remove it from the list?
+                }
+            }
         }
 
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
+            if(sender is Button btn && btn.Tag is int diaryId)
+            {
+                var entryToUpdate = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
+                if(entryToUpdate != null)
+                {
+                    TextRange textRange = new TextRange(updateTxtDiaryEntry.Document.ContentStart, updateTxtDiaryEntry.Document.ContentEnd);
+                    entryToUpdate.DiaryText = textRange.Text;
 
+                    db.SaveChanges();
+                }
+            }
         }
 
         private void btnCancelUpdate_Click(object sender, RoutedEventArgs e)
