@@ -40,7 +40,7 @@
                 </Grid>
                 
             </TabItem>
-            <TabItem>
+            <TabItem x:Name="previousEntriesTabItem">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="10" Height="10" Fill="DarkBlue" />

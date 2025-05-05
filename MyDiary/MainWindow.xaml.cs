@@ -28,6 +28,10 @@ using System.Windows.Shapes;
  *      - Update & Cancel buttons (with "Are you sure?")
  *      
  *      - Move db stuff to a data layer (out of the code behind)
+ *      
+ *      - Use async for db save
+ *      
+ *      - Store diary text in a TEXT column, and do the proper conversion to xaml and rich text
  */
 
 namespace MyDiary
@@ -128,6 +132,8 @@ namespace MyDiary
         protected void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        private string updateDiaryTextInitial = null;
+
         private void viewEditEntryBtn_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag is int diaryId)
@@ -138,8 +144,9 @@ namespace MyDiary
                     // Setup data in the edit tab
                     dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
 
+                    updateDiaryTextInitial = entryToEdit.DiaryText;
                     updateTxtDiaryEntry.Document.Blocks.Clear();
-                    updateTxtDiaryEntry.AppendText(entryToEdit.DiaryText);
+                    updateTxtDiaryEntry.AppendText(updateDiaryTextInitial);
                     updateTxtDiaryEntry.Focus();
                     updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
 
@@ -170,11 +177,24 @@ namespace MyDiary
                     db.SaveChanges();
                 }
             }
+
+            DiaryTabs.SelectedItem = previousEntriesTabItem;
         }
 
         private void btnCancelUpdate_Click(object sender, RoutedEventArgs e)
         {
+            TextRange textRange = new TextRange(updateTxtDiaryEntry.Document.ContentStart, updateTxtDiaryEntry.Document.ContentEnd);
+            // If any changes were made, confirm if they want to cancel
+            if (updateDiaryTextInitial != textRange.Text)
+            {
+                var confirmationResult = MessageBox.Show("Are you sure you want to cancel?", "Confirm cancellation", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
+                if(confirmationResult == MessageBoxResult.Yes)
+                {
+                    DiaryTabs.SelectedItem = previousEntriesTabItem;
+                }
+            }
+            
         }
     }
 }
