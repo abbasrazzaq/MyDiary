@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +15,8 @@ using System.Windows.Shapes;
 /*
  *  TODO:
  *      - Search 
- *      - Paging
+ *      - Don't allow a future date?
+ *      - Paging (for previous diary entries)
  *      - Private/Public
  *          - Password
  *      
@@ -27,7 +29,7 @@ using System.Windows.Shapes;
  *      
  *      - Use async for db save
  *      
- *      - Store diary text in a TEXT column, and do the proper conversion to xaml and rich text
+ *      
  */
 
 namespace MyDiary
@@ -83,18 +85,17 @@ namespace MyDiary
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            TextRange textRange = new TextRange(txtDiaryEntry.Document.ContentStart, txtDiaryEntry.Document.ContentEnd);
-
+            string diaryEntryXaml = getXamlFromRichTextBox(txtDiaryEntry);
             DateTime diaryDate = DateTime.Now;
             
-            // TODO: Check if not select and asks user to enter a date
+            // TODO: Check if not selected and asks user to enter a date
             if(dateDiaryEntry.SelectedDate is not null)
             {
                 diaryDate = dateDiaryEntry.SelectedDate.Value;
             }
 
             // Add diary entry
-            var newEntry = new Diary { DiaryText = textRange.Text, DiaryDate = diaryDate };
+            var newEntry = new Diary { DiaryText = diaryEntryXaml, DiaryDate = diaryDate };
             db.Add(newEntry);
             db.SaveChangesAsync();
 
@@ -127,6 +128,7 @@ namespace MyDiary
         protected void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        // TODO: Fix this hack
         private string updateDiaryTextInitial = null;
 
         private void switchToDiaryEditing(int diaryId)
@@ -138,8 +140,10 @@ namespace MyDiary
                 dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
 
                 updateDiaryTextInitial = entryToEdit.DiaryText;
-                updateTxtDiaryEntry.Document.Blocks.Clear();
-                updateTxtDiaryEntry.AppendText(updateDiaryTextInitial);
+                //updateTxtDiaryEntry.Document.Blocks.Clear();
+                // TODO: 
+                //updateTxtDiaryEntry.AppendText(updateDiaryTextInitial);
+                loadXamlIntoRichTextBox(updateTxtDiaryEntry, updateDiaryTextInitial);
                 updateTxtDiaryEntry.Focus();
                 updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
 
@@ -171,8 +175,8 @@ namespace MyDiary
                 var entryToUpdate = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
                 if(entryToUpdate != null)
                 {
-                    TextRange textRange = new TextRange(updateTxtDiaryEntry.Document.ContentStart, updateTxtDiaryEntry.Document.ContentEnd);
-                    entryToUpdate.DiaryText = textRange.Text;
+                    string updatedDiaryText = getXamlFromRichTextBox(updateTxtDiaryEntry);
+                    entryToUpdate.DiaryText = updatedDiaryText;
 
                     db.SaveChanges();
                 }
@@ -183,9 +187,9 @@ namespace MyDiary
 
         private void btnCancelUpdate_Click(object sender, RoutedEventArgs e)
         {
-            TextRange textRange = new TextRange(updateTxtDiaryEntry.Document.ContentStart, updateTxtDiaryEntry.Document.ContentEnd);
+            string updatedDiaryText = getXamlFromRichTextBox(updateTxtDiaryEntry);
             // If any changes were made, confirm if they want to cancel
-            if (updateDiaryTextInitial != textRange.Text)
+            if (!string.Equals(updateDiaryTextInitial, updatedDiaryText, StringComparison.Ordinal))
             {
                 var confirmationResult = MessageBox.Show("Are you sure you want to cancel?", "Confirm cancellation", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
@@ -201,6 +205,30 @@ namespace MyDiary
             if(previousEntriesListView.SelectedItem is DiaryEntryListItem selectedEntry)
             {
                 switchToDiaryEditing(selectedEntry.DiaryId);
+            }
+        }
+
+
+        private string getXamlFromRichTextBox(RichTextBox richTextBox)
+        {
+            TextRange textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+            using (var ms = new MemoryStream())
+            {
+                textRange.Save(ms, DataFormats.Xaml);
+                ms.Position = 0;
+                using (var reader = new StreamReader(ms))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        private void loadXamlIntoRichTextBox(RichTextBox richTextBox, string xamlText)
+        {
+            TextRange textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(xamlText)))
+            {
+                textRange.Load(ms, DataFormats.Xaml);
             }
         }
     }
