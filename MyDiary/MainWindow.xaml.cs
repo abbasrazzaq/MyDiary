@@ -13,10 +13,6 @@ using System.Windows.Shapes;
 
 /*
  *  TODO:
- *      - Double click an entry to view it
- *          - Can update text
- *          - Can't change date
- *          
  *      - Search 
  *      - Paging
  *      - Private/Public
@@ -124,7 +120,6 @@ namespace MyDiary
                         PreviousEntries.Remove(itemToRemove);
                     }
                 }
-
             }
         }
 
@@ -134,33 +129,38 @@ namespace MyDiary
 
         private string updateDiaryTextInitial = null;
 
+        private void switchToDiaryEditing(int diaryId)
+        {
+            var entryToEdit = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
+            if (entryToEdit != null)
+            {
+                // Setup data in the edit tab
+                dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
+
+                updateDiaryTextInitial = entryToEdit.DiaryText;
+                updateTxtDiaryEntry.Document.Blocks.Clear();
+                updateTxtDiaryEntry.AppendText(updateDiaryTextInitial);
+                updateTxtDiaryEntry.Focus();
+                updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
+
+                // TODO: Store id somewhere for the tab to use on Update click
+                btnUpdate.Tag = entryToEdit.DiaryId;
+
+                // Switch tab
+                DiaryTabs.SelectedItem = editDiaryTabItem;
+            }
+            else
+            {
+                // TODO: What if we can't find it for some reason?
+                // Error message box and remove it from the list?
+            }
+        }
+
         private void viewEditEntryBtn_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag is int diaryId)
             {
-                var entryToEdit = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
-                if(entryToEdit != null)
-                {
-                    // Setup data in the edit tab
-                    dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
-
-                    updateDiaryTextInitial = entryToEdit.DiaryText;
-                    updateTxtDiaryEntry.Document.Blocks.Clear();
-                    updateTxtDiaryEntry.AppendText(updateDiaryTextInitial);
-                    updateTxtDiaryEntry.Focus();
-                    updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
-
-                    // TODO: Store id somewhere for the tab to use on Update click
-                    btnUpdate.Tag = entryToEdit.DiaryId;
-
-                    // Switch tab
-                    DiaryTabs.SelectedItem = editDiaryTabItem;
-                }
-                else
-                {
-                    // TODO: What if we can't find it for some reason?
-                    // Error message box and remove it from the list?
-                }
+                switchToDiaryEditing(diaryId);
             }
         }
 
@@ -194,7 +194,14 @@ namespace MyDiary
                     DiaryTabs.SelectedItem = previousEntriesTabItem;
                 }
             }
-            
+        }
+
+        private void PreviousEntriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if(previousEntriesListView.SelectedItem is DiaryEntryListItem selectedEntry)
+            {
+                switchToDiaryEditing(selectedEntry.DiaryId);
+            }
         }
     }
 }

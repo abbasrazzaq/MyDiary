@@ -48,7 +48,7 @@
                     </StackPanel>
                 </TabItem.Header>
 
-                <ListView ItemsSource="{Binding PreviousEntries}">
+                <ListView x:Name="previousEntriesListView" ItemsSource="{Binding PreviousEntries}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
