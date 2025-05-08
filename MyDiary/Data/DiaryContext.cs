@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace MyDiary
+namespace MyDiary.Data
 {
     public class DiaryContext : DbContext
     {
