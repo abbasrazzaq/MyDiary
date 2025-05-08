@@ -7,14 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyDiary.Data
 {
-    internal class DiaryRepository
+    public class DiaryRepository
     {
         private readonly DiaryContext _context;
 
-        // TODO: Dependency injection
-        public DiaryRepository(/*DiaryContext context*/)
+        public DiaryRepository(DiaryContext context)
         {
-            _context = new DiaryContext();
+            _context = context;
         }
 
         public async Task<List<DiaryEntryListItem>> GetAllEntriesAsync()

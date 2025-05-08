@@ -17,8 +17,7 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *      - Move db stuff to a data layer (out of the code behind)
- *  
+
  *      - Search 
  *      - Don't allow a future date?
  *      - Paging (for previous diary entries)
@@ -44,12 +43,9 @@ namespace MyDiary
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        //private DiaryContext db = new DiaryContext();
-        
 
         public event PropertyChangedEventHandler PropertyChanged;
-        //protected void OnPropertyChanged(string propertyName)
-        //    => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -66,12 +62,13 @@ namespace MyDiary
             }
         }
 
-        private readonly DiaryRepository _diaryRepository = new DiaryRepository();
+        private readonly DiaryRepository _diaryRepository;
 
-        public MainWindow()
+        public MainWindow(DiaryRepository diaryRepository)
         {
             InitializeComponent();
 
+            _diaryRepository = diaryRepository;
             DataContext = this;
 
             resetDiaryEntryUI();
@@ -91,12 +88,6 @@ namespace MyDiary
 
         private async void loadDiaryEntries()
         {
-            //PreviousEntries = new ObservableCollection<DiaryEntryListItem>
-            //{
-            //    new DiaryEntryListItem { DiaryId = 1, DiaryDate = DateTime.Today },
-            //    new DiaryEntryListItem { DiaryId = 2, DiaryDate = DateTime.Today.AddDays(-1) }
-            //};
-
             var entries = await _diaryRepository.GetAllEntriesAsync();
             if (entries == null || entries.Count == 0)
             {
@@ -104,17 +95,6 @@ namespace MyDiary
             }
 
             PreviousEntries = new ObservableCollection<DiaryEntryListItem>(entries);
-
-            //PreviousEntries = new ObservableCollection<DiaryEntryListItem>(
-            //    await _diaryRepository.GetAllEntriesAsync()
-            //    );
-
-            //PreviousEntries = new ObservableCollection<DiaryEntryListItem>(
-            //    db.DiaryEntries
-            //    .OrderByDescending(b => b.DiaryDate)
-            //    .Select(x => new DiaryEntryListItem { DiaryId = x.DiaryId, DiaryDate = x.DiaryDate })
-            //    .ToList()
-            //    );
         }
 
         private async void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -161,17 +141,6 @@ namespace MyDiary
                         PreviousEntries.Remove(itemToRemove);
                     }
                 }
-
-
-
-                //var entryToDelete = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
-                //if(entryToDelete != null)
-                //{
-                //    db.DiaryEntries.Remove(entryToDelete);
-                //    db.SaveChanges();
-
-
-                //}
             }
         }
 
@@ -188,9 +157,7 @@ namespace MyDiary
                 dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
 
                 updateDiaryTextInitial = entryToEdit.DiaryText;
-                //updateTxtDiaryEntry.Document.Blocks.Clear();
                 // TODO: 
-                //updateTxtDiaryEntry.AppendText(updateDiaryTextInitial);
                 loadXamlIntoRichTextBox(updateTxtDiaryEntry, updateDiaryTextInitial);
                 updateTxtDiaryEntry.Focus();
                 updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
@@ -220,24 +187,7 @@ namespace MyDiary
         {
             if(sender is Button btn && btn.Tag is int diaryId)
             {
-                //Diary updatedDiary = new Diary
-                //{ 
-                //    DiaryId = diaryId,
-                //    DiaryText = updateDiaryTextInitial,
-                //    DiaryDate = 
-                //};
-                //await _diaryRepository.UpdateEntryAsync(updatedDiary);
-
                 await _diaryRepository.UpdateEntryAsync(diaryId, getXamlFromRichTextBox(updateTxtDiaryEntry));
-
-                //var entryToUpdate = db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
-                //if(entryToUpdate != null)
-                //{
-                //    string updatedDiaryText = getXamlFromRichTextBox(updateTxtDiaryEntry);
-                //    entryToUpdate.DiaryText = updatedDiaryText;
-
-                //    db.SaveChanges();
-                //}
             }
 
             DiaryTabs.SelectedItem = previousEntriesTabItem;
