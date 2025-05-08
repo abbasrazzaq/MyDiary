@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
+        <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -40,7 +40,7 @@
                 </Grid>
                 
             </TabItem>
-            <TabItem>
+            <TabItem x:Name="previousEntriesTabItem">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="10" Height="10" Fill="DarkBlue" />
@@ -48,16 +48,49 @@
                     </StackPanel>
                 </TabItem.Header>
 
-                <ListView ItemsSource="{Binding PreviousEntries}">
+                <ListView x:Name="previousEntriesListView" ItemsSource="{Binding PreviousEntries}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding DiaryDate}" />
+                                <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
+                                    Delete Entry
+                                </Button>
+                                <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
+                                    View / Edit Entry
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
                 
+            </TabItem>
+            <TabItem x:Name="editDiaryTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="10" Height="10" Fill="DarkGreen" />
+                        <TextBlock>Edit Entry</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Width="Auto">
+                        <Button x:Name="btnUpdate" Margin="0,5,0,0" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
+                        <Button x:Name="btnCancelUpdate" Margin="0,5,0,0" Click="btnCancelUpdate_Click" Width="Auto">Cancel</Button>
+                    </StackPanel>
+                    
+                    <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />
+
+                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" />
+
+                </Grid>
+
             </TabItem>
 
         </TabControl>
