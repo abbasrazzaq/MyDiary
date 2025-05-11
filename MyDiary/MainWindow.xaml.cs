@@ -18,6 +18,8 @@ using MyDiary.Data;
 /*
  *  TODO:
 
+        - Show diary text in previous entries
+        - Update previous entries text after having edited a diary.
  *      - Search 
  *      - Don't allow a future date?
  *      - Paging (for previous diary entries)
@@ -144,7 +146,6 @@ namespace MyDiary
             }
         }
 
-
         // TODO: Fix this hack
         private string updateDiaryTextInitial = null;
 
@@ -246,6 +247,14 @@ namespace MyDiary
             {
                 textRange.Load(ms, DataFormats.Xaml);
             }
+        }
+
+        
+
+        private void SearchTxtBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Search entries and filter the list
+            // Show the sentence on the right of matching bit
         }
     }
 }

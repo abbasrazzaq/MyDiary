@@ -23,7 +23,9 @@ namespace MyDiary.Data
                 .OrderByDescending(b => b.DiaryDate)
                 .Select(x => new DiaryEntryListItem
                 {
-                    DiaryId = x.DiaryId, DiaryDate = x.DiaryDate
+                    DiaryId = x.DiaryId, 
+                    DiaryDate = x.DiaryDate,
+                    DiaryText = x.DiaryText
                 })
                 .ToList()
             );

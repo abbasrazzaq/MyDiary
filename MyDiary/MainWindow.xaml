@@ -48,21 +48,28 @@
                     </StackPanel>
                 </TabItem.Header>
 
-                <ListView x:Name="previousEntriesListView" ItemsSource="{Binding PreviousEntries}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding DiaryDate}" />
-                                <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
-                                    Delete Entry
-                                </Button>
-                                <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
-                                    View / Edit Entry
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <StackPanel Orientation="Vertical">
+                    <Label>Search Entries: </Label>
+                    <TextBox x:Name="SearchTxtBox" TextChanged="SearchTxtBox_TextChanged" />
+                    <ListView x:Name="previousEntriesListView" ItemsSource="{Binding PreviousEntries}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding DiaryDate}" />
+                                    <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
+                                        Delete Entry
+                                    </Button>
+                                    <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
+                                        View / Edit Entry
+                                    </Button>
+                                    <TextBlock Text="{Binding PlainDiaryText}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+                
+                
                 
             </TabItem>
             <TabItem x:Name="editDiaryTabItem">
