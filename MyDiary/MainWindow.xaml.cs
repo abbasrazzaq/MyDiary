@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,9 +19,7 @@ using MyDiary.Data;
 /*
  *  TODO:
 
-        - Show diary text in previous entries
-        - Update previous entries text after having edited a diary.
- *      - Search 
+        - Clean up and refactoring
  *      - Don't allow a future date?
  *      - Paging (for previous diary entries)
  *      - Private/Public
@@ -60,11 +59,35 @@ namespace MyDiary
             set
             {
                 _previousEntries = value;
-                OnPropertyChanged(nameof(PreviousEntries));
+                OnPropertyChanged();
+
+                SetupCollectionView();
             }
         }
 
         private readonly DiaryRepository _diaryRepository;
+
+        public ICollectionView EntriesView { get; private set; }
+
+        private void SetupCollectionView()
+        {
+            EntriesView = CollectionViewSource.GetDefaultView(PreviousEntries);
+            EntriesView.Filter = filterDiaryEntries;
+
+            OnPropertyChanged(nameof(EntriesView));
+        }
+
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                EntriesView.Refresh();
+            }
+        }
 
         public MainWindow(DiaryRepository diaryRepository)
         {
@@ -76,6 +99,17 @@ namespace MyDiary
             resetDiaryEntryUI();
             loadDiaryEntries();
 
+        }
+
+        private bool filterDiaryEntries(object item)
+        {
+            if(item is DiaryEntryListItem entry)
+            {
+                return string.IsNullOrEmpty(SearchText)
+                || entry.PlainDiaryText?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+
+            return false;
         }
 
         private void resetDiaryEntryUI()
@@ -188,7 +222,16 @@ namespace MyDiary
         {
             if(sender is Button btn && btn.Tag is int diaryId)
             {
-                await _diaryRepository.UpdateEntryAsync(diaryId, getXamlFromRichTextBox(updateTxtDiaryEntry));
+                string updatedXamlText = getXamlFromRichTextBox(updateTxtDiaryEntry);
+                await _diaryRepository.UpdateEntryAsync(diaryId, updatedXamlText);
+
+                // Update the entry in the UI collection
+                var item = PreviousEntries.FirstOrDefault(x => x.DiaryId == diaryId);
+                if(item  != null)
+                {
+                    item.DiaryText = updatedXamlText;
+                }
+                
             }
 
             DiaryTabs.SelectedItem = previousEntriesTabItem;
@@ -247,14 +290,6 @@ namespace MyDiary
             {
                 textRange.Load(ms, DataFormats.Xaml);
             }
-        }
-
-        
-
-        private void SearchTxtBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // Search entries and filter the list
-            // Show the sentence on the right of matching bit
         }
     }
 }
