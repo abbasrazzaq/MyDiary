@@ -19,20 +19,16 @@ using MyDiary.Data;
 /*
  *  TODO:
 
-        - Clean up and refactoring
- *      - Don't allow a future date?
+       - Private/Public
+ *          - Password (what's the best encryption/hashing to use to store the password)
+ *              - Inc secret question & answer
+ *      - Remove code duplicaiton for add and edit tabs
  *      - Paging (for previous diary entries)
- *      - Private/Public
- *          - Password
- *      
- *     - Edit Diary Entry
- *      - Date (readonly)
- *      - Text box
- *      - Update & Cancel buttons (with "Are you sure?")
- *      
- *      
- *      
- *      - Use async for db save
+
+        - Clean up and refactoring
+            - Fix warnings
+- Don't allow setting of date that already has an entry.
+
  *      
  *      
  */
@@ -44,6 +40,7 @@ namespace MyDiary
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private bool _textChangedDuringEdit = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -114,7 +111,7 @@ namespace MyDiary
 
         private void resetDiaryEntryUI()
         {
-            dateDiaryEntry.SelectedDate = DateTime.Now;
+            dateDiaryEntry.SelectedDate = DateTime.Now.Date;
 
             txtDiaryEntry.Document.Blocks.Clear();
             txtDiaryEntry.AppendText("Dear Diary,\n");
@@ -180,28 +177,23 @@ namespace MyDiary
             }
         }
 
-        // TODO: Fix this hack
-        private string updateDiaryTextInitial = null;
-
         private async void switchToDiaryEditing(int diaryId)
         {
-            var entryToEdit = await _diaryRepository.GetEntryByIdAsync(diaryId);// db.DiaryEntries.FirstOrDefault(d => d.DiaryId == diaryId);
+            var entryToEdit = await _diaryRepository.GetEntryByIdAsync(diaryId);
             if (entryToEdit != null)
             {
                 // Setup data in the edit tab
                 dudDateDiaryEntry.SelectedDate = entryToEdit.DiaryDate;
 
-                updateDiaryTextInitial = entryToEdit.DiaryText;
-                // TODO: 
-                loadXamlIntoRichTextBox(updateTxtDiaryEntry, updateDiaryTextInitial);
+                loadXamlIntoRichTextBox(updateTxtDiaryEntry, entryToEdit.DiaryText);
                 updateTxtDiaryEntry.Focus();
                 updateTxtDiaryEntry.CaretPosition = updateTxtDiaryEntry.Document.ContentEnd;
-
-                // TODO: Store id somewhere for the tab to use on Update click
+                // Store diary id on update button
                 btnUpdate.Tag = entryToEdit.DiaryId;
 
                 // Switch tab
                 DiaryTabs.SelectedItem = editDiaryTabItem;
+                _textChangedDuringEdit = false;
             }
             else
             {
@@ -239,25 +231,16 @@ namespace MyDiary
 
         private void btnCancelUpdate_Click(object sender, RoutedEventArgs e)
         {
-            var updatedDiaryText = getXamlFromRichTextBox(updateTxtDiaryEntry);
-            var continueCancellation = true;
+            var confirmationMessage = _textChangedDuringEdit
+                ? "Are you sure you want to discard your changes?"
+                : "Are you sure you want to cancel?";
 
-            // If any changes were made, confirm if they want to cancel
-            if (!string.Equals(updateDiaryTextInitial, updatedDiaryText, StringComparison.Ordinal))
-            {
-                var confirmationResult = MessageBox.Show("Are you sure you want to cancel?", "Confirm cancellation", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var confirmationResult = MessageBox.Show(confirmationMessage, "Confirm cancellation", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
-                if(confirmationResult == MessageBoxResult.No)
-                {
-                    continueCancellation = false;
-                }
-            }
-
-            if(continueCancellation)
+            if(confirmationResult == MessageBoxResult.Yes)
             {
                 DiaryTabs.SelectedItem = previousEntriesTabItem;
             }
-            
         }
 
         private void PreviousEntriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -289,6 +272,27 @@ namespace MyDiary
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(xamlText)))
             {
                 textRange.Load(ms, DataFormats.Xaml);
+            }
+        }
+
+        private void updateTxtDiaryEntry_Changed(object sender, TextChangedEventArgs e)
+        {
+            _textChangedDuringEdit = true;
+        }
+
+        private void dateDiaryEntry_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(dateDiaryEntry.SelectedDate is null)
+            {
+                MessageBox.Show("Please select a date.", "Missing Date", MessageBoxButton.OK, MessageBoxImage.Warning);
+                dateDiaryEntry.SelectedDate = DateTime.Now.Date;
+                return;
+            }
+
+            if(dateDiaryEntry.SelectedDate > DateTime.Today)
+            {
+                MessageBox.Show("Future dates are not allowed.", "Invalid Date", MessageBoxButton.OK, MessageBoxImage.Warning);
+                dateDiaryEntry.SelectedDate = DateTime.Now.Date;
             }
         }
     }

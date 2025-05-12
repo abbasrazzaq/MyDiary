@@ -33,7 +33,7 @@
                     </Grid.RowDefinitions>
 
                     <Button Grid.Row="2" x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
+                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" SelectedDateChanged="dateDiaryEntry_SelectedDateChanged" />
 
                     <RichTextBox Grid.Row="1" x:Name="txtDiaryEntry" Height="Auto" />
 
@@ -94,7 +94,7 @@
                     
                     <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />
 
-                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" />
+                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" TextChanged="updateTxtDiaryEntry_Changed" />
 
                 </Grid>
 
