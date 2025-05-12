@@ -11,6 +11,9 @@ namespace MyDiary.Data
     {
         public DbSet<Diary> DiaryEntries { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
+
         public string DbPath { get; }
 
         public DiaryContext()
@@ -21,15 +24,17 @@ namespace MyDiary.Data
             DbPath = System.IO.Path.Join(path, "diary.db");
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite($"Data Source={DbPath}");
 
-    }
-
-    public class Diary
-    {
-        public int DiaryId { get; set; }
-        public DateTime DiaryDate { get; set; }
-        public required string DiaryText { get; set; }
     }
 }

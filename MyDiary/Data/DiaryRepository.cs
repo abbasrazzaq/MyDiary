@@ -63,5 +63,18 @@ namespace MyDiary.Data
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<string> GetUserPasswordHash(string username)
+        {
+            string passwordHash = null;
+            var user = await _context.Users.FirstOrDefaultAsync(d => d.Username == username);
+            if (user != null)
+            {
+                passwordHash = user.PasswordHash;
+            }
+
+            return passwordHash;
+        }
+
     }
 }
