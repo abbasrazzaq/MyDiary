@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyDiary"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="800">
+        Title="Diary Locked!" Height="450" Width="800">
     <Grid>
         <StackPanel>
             <Label>Name:</Label>
             <TextBox x:Name="usernameTextBox"></TextBox>
             <Label>Password:</Label>
-            <TextBox x:Name="passwordTextBox"></TextBox>
-            <Button x:Name="loginButton" Click="loginButton_Click">Login</Button>
+            <PasswordBox x:Name="passwordBox" />
+            <Button x:Name="loginButton" Click="loginButton_Click">Unlock Diary</Button>
         </StackPanel>
         
     </Grid>

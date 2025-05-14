@@ -23,6 +23,9 @@ namespace MyDiary
     {
         private readonly DiaryRepository _diaryRepository;
 
+        // name:        abbas
+        // password:    england
+
         public LoginWindow(DiaryRepository diaryRepository)
         {
             InitializeComponent();
@@ -32,14 +35,11 @@ namespace MyDiary
 
         private async void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            string username = usernameTextBox.Text;
-            string password = passwordTextBox.Text;
+            string storedPasswordHash = await _diaryRepository.GetUserPasswordHash(usernameTextBox.Text);
 
-            string storedPasswordHash = await _diaryRepository.GetUserPasswordHash(username);
-
-            if(storedPasswordHash == null || !PasswordHasher.VerifyPassword(password, storedPasswordHash))
+            if(storedPasswordHash == null || !PasswordHasher.VerifyPassword(passwordBox.Password, storedPasswordHash))
             {
-                MessageBox.Show("Invalid login details", "Login Failed", MessageBoxButton.OK);
+                MessageBox.Show("Invalid Details", "Unlock Failed!", MessageBoxButton.OK);
             }
             else
             {

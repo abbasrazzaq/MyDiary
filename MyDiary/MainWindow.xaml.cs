@@ -19,17 +19,11 @@ using MyDiary.Data;
 /*
  *  TODO:
 
-       - Private/Public
         - Unit testing
- *          - Password (what's the best encryption/hashing to use to store the password)
- *              - Inc secret question & answer
  *     - Paging (for previous diary entries)
  *     - Remove code duplicaiton for add and edit tabs
- 
- *      
-
        - Clean up and refactoring
-            - Fix warnings
+            - Fix vs warnings
        - Don't allow setting of date that already has an entry.
 
  *      
