@@ -23,7 +23,9 @@ namespace MyDiary.Data
                 .OrderByDescending(b => b.DiaryDate)
                 .Select(x => new DiaryEntryListItem
                 {
-                    DiaryId = x.DiaryId, DiaryDate = x.DiaryDate
+                    DiaryId = x.DiaryId, 
+                    DiaryDate = x.DiaryDate,
+                    DiaryText = x.DiaryText
                 })
                 .ToList()
             );
@@ -61,5 +63,18 @@ namespace MyDiary.Data
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<string> GetUserPasswordHash(string username)
+        {
+            string passwordHash = null;
+            var user = await _context.Users.FirstOrDefaultAsync(d => d.Username == username);
+            if (user != null)
+            {
+                passwordHash = user.PasswordHash;
+            }
+
+            return passwordHash;
+        }
+
     }
 }

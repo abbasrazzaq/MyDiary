@@ -17,12 +17,25 @@ namespace MyDiary
         {
             var services = new ServiceCollection();
 
-            ConfigureServices(services);
+            // Register services
+            services.AddSingleton<DiaryContext>();
+            services.AddSingleton<DiaryRepository>();
+            services.AddTransient<MainWindow>();
+            services.AddTransient<LoginWindow>();
+
+
+
+            //ConfigureServices(services);
 
             ServiceProvider = services.BuildServiceProvider();
 
-            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            // Register services
+            
+
+            //var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+            //mainWindow.Show();
+            var loginWindow = ServiceProvider.GetRequiredService<LoginWindow>();
+            loginWindow.Show();
         }
 
         private void ConfigureServices(IServiceCollection services)
@@ -31,6 +44,7 @@ namespace MyDiary
             services.AddScoped<DiaryRepository>();
 
             services.AddSingleton<MainWindow>();
+            services.AddSingleton<LoginWindow>();
         }
     }
 

@@ -33,7 +33,7 @@
                     </Grid.RowDefinitions>
 
                     <Button Grid.Row="2" x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" />
+                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" SelectedDateChanged="dateDiaryEntry_SelectedDateChanged" />
 
                     <RichTextBox Grid.Row="1" x:Name="txtDiaryEntry" Height="Auto" />
 
@@ -48,21 +48,28 @@
                     </StackPanel>
                 </TabItem.Header>
 
-                <ListView x:Name="previousEntriesListView" ItemsSource="{Binding PreviousEntries}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding DiaryDate}" />
-                                <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
-                                    Delete Entry
-                                </Button>
-                                <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
-                                    View / Edit Entry
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <StackPanel Orientation="Vertical">
+                    <Label>Search Entries: </Label>
+                    <TextBox x:Name="SearchTxtBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                    <ListView x:Name="previousEntriesListView" ItemsSource="{Binding EntriesView}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding DiaryDate}" />
+                                    <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
+                                        Delete Entry
+                                    </Button>
+                                    <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
+                                        View / Edit Entry
+                                    </Button>
+                                    <TextBlock Text="{Binding PlainDiaryText}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+                
+                
                 
             </TabItem>
             <TabItem x:Name="editDiaryTabItem">
@@ -87,7 +94,7 @@
                     
                     <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />
 
-                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" />
+                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" TextChanged="updateTxtDiaryEntry_Changed" />
 
                 </Grid>
 
