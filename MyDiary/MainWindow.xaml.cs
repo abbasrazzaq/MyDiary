@@ -92,9 +92,6 @@ namespace MyDiary
 
             resetDiaryEntryUI();
             loadDiaryEntries();
-
-            string passwordHash = PasswordHasher.HashPassword("england");
-
         }
 
         private bool filterDiaryEntries(object item)
