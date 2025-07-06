@@ -18,8 +18,6 @@ using MyDiary.Data;
 
 /*
  *  TODO:
-
-        - Unit testing
  *     - Paging (for previous diary entries)
  *     - Remove code duplicaiton for add and edit tabs
        - Clean up and refactoring
