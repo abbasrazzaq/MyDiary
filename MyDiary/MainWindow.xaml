@@ -67,6 +67,8 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <Button x:Name="previousPageBtn"  Click="previousPageBtn_Click" IsEnabled="false">Previous Page</Button>
+                    <Button x:Name="nextPageBtn" Click="nextPageBtn_Click" IsEnabled="false">Next Page</Button>
                 </StackPanel>
                 
                 

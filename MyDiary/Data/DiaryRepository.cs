@@ -7,6 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyDiary.Data
 {
+
+    public class PagedResult<T>
+    {
+        public List<T> Items { get; set; } = new();
+        public int TotalPages { get; set; }
+        public int TotalCount { get; set; }
+    }
+
     public class DiaryRepository
     {
         private readonly DiaryContext _context;
@@ -16,19 +24,30 @@ namespace MyDiary.Data
             _context = context;
         }
 
-        public async Task<List<DiaryEntryListItem>> GetAllEntriesAsync()
+        public async Task<PagedResult<DiaryEntryListItem>> GetPagedEntriesAsync(int pageIndex, int pageSize)
         {
-            return await Task.Run(() =>
-                _context.DiaryEntries
-                .OrderByDescending(b => b.DiaryDate)
+            var query = _context.DiaryEntries.OrderByDescending(e => e.DiaryDate);
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var items = await query
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
                 .Select(x => new DiaryEntryListItem
                 {
-                    DiaryId = x.DiaryId, 
+                    DiaryId = x.DiaryId,
                     DiaryDate = x.DiaryDate,
                     DiaryText = x.DiaryText
                 })
-                .ToList()
-            );
+                .ToListAsync();
+
+            return new PagedResult<DiaryEntryListItem>
+            {
+                Items = items,
+                TotalPages = totalPages,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<Diary> GetEntryByIdAsync(int id)
