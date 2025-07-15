@@ -19,8 +19,7 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *      - Make UI nicer
- *     - Paging (for previous diary entries)
+ *     - Make UI nicer
  *     - Remove code duplicaiton for add and edit tabs
  *      -- Can separate tabs into their own xamls?
        - Clean up and refactoring
