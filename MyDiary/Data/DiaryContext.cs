@@ -16,12 +16,12 @@ namespace MyDiary.Data
 
         public string DbPath { get; }
 
-        public DiaryContext()
+        public DiaryContext(DbContextOptions<DiaryContext> options) : base(options)
         {
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
+            //var folder = Environment.SpecialFolder.LocalApplicationData;
+            //var path = Environment.GetFolderPath(folder);
 
-            DbPath = System.IO.Path.Join(path, "diary.db");
+            //DbPath = System.IO.Path.Join(path, "diary.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace MyDiary.Data
                 .HasIndex(u => u.Username)
                 .IsUnique();
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source={DbPath}");
 
     }
 }

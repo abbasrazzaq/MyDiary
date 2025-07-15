@@ -18,10 +18,9 @@ using MyDiary.Data;
 
 /*
  *  TODO:
-
-        - Unit testing
  *     - Paging (for previous diary entries)
  *     - Remove code duplicaiton for add and edit tabs
+ *      -- Can separate tabs into their own xamls?
        - Clean up and refactoring
             - Fix vs warnings
        - Don't allow setting of date that already has an entry.
@@ -38,6 +37,8 @@ namespace MyDiary
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private bool _textChangedDuringEdit = false;
+        private int _previousEntriesPageIndex = 0;
+        private int _previousEntriesPageCount = 0;
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -92,9 +93,6 @@ namespace MyDiary
 
             resetDiaryEntryUI();
             loadDiaryEntries();
-
-            string passwordHash = PasswordHasher.HashPassword("england");
-
         }
 
         private bool filterDiaryEntries(object item)
@@ -120,13 +118,13 @@ namespace MyDiary
 
         private async void loadDiaryEntries()
         {
-            var entries = await _diaryRepository.GetAllEntriesAsync();
-            if (entries == null || entries.Count == 0)
-            {
-                return;
-            }
+            var paged = await _diaryRepository.GetPagedEntriesAsync(_previousEntriesPageIndex, 2);
 
-            PreviousEntries = new ObservableCollection<DiaryEntryListItem>(entries);
+            PreviousEntries = new ObservableCollection<DiaryEntryListItem>(paged.Items);
+            _previousEntriesPageCount = paged.TotalPages;
+
+            previousPageBtn.IsEnabled = (_previousEntriesPageIndex > 0);
+            nextPageBtn.IsEnabled = (_previousEntriesPageIndex < (_previousEntriesPageCount - 1));
         }
 
         private async void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -207,6 +205,19 @@ namespace MyDiary
             {
                 switchToDiaryEditing(diaryId);
             }
+        }
+
+        private void previousPageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _previousEntriesPageIndex--;
+            loadDiaryEntries();
+
+        }
+
+        private void nextPageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _previousEntriesPageIndex++;
+            loadDiaryEntries();
         }
 
         private async void btnUpdate_Click(object sender, RoutedEventArgs e)
@@ -294,5 +305,7 @@ namespace MyDiary
                 dateDiaryEntry.SelectedDate = DateTime.Now.Date;
             }
         }
+
+
     }
 }

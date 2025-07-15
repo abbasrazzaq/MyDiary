@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyDiary.Data;
 
@@ -17,19 +18,21 @@ namespace MyDiary
         {
             var services = new ServiceCollection();
 
+            // Define SQLite path
+            var folder = Environment.SpecialFolder.LocalApplicationData;
+            var path = System.IO.Path.Combine(Environment.GetFolderPath(folder), "diary.db");
+
+            services.AddDbContext<DiaryContext>(options =>
+            options.UseSqlite($"Data Source={path}"));
+
             // Register services
-            services.AddSingleton<DiaryContext>();
+            //services.AddSingleton<DiaryContext>();
             services.AddSingleton<DiaryRepository>();
+
             services.AddTransient<MainWindow>();
             services.AddTransient<LoginWindow>();
 
-
-
-            //ConfigureServices(services);
-
             ServiceProvider = services.BuildServiceProvider();
-
-            // Register services
             
 
             //var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
