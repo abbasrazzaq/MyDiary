@@ -19,6 +19,7 @@ using MyDiary.Data;
 
 /*
  *  TODO:
+ *     - Don't allow adding of diary entry to the same date.
  *     - Make UI nicer
  *     - Remove code duplicaiton for add and edit tabs
  *      -- Can separate tabs into their own xamls?

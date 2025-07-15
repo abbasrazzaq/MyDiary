@@ -32,11 +32,11 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Row="2" x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" SelectedDateChanged="dateDiaryEntry_SelectedDateChanged" />
+                    <DatePicker Grid.Row="0" Padding="1" Margin="10" x:Name="dateDiaryEntry" IsTodayHighlighted="true" SelectedDateChanged="dateDiaryEntry_SelectedDateChanged" Width="Auto" HorizontalAlignment="Left" />
 
                     <RichTextBox Grid.Row="1" x:Name="txtDiaryEntry" Height="Auto" />
 
+                    <Button Grid.Row="2" x:Name="btnAdd" Padding="5" Margin="5" Click="btnAdd_Click" Content="Add Entry" Width="Auto" HorizontalAlignment="Right" />
                 </Grid>
                 
             </TabItem>
