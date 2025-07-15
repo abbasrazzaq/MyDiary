@@ -14,10 +14,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.Options;
 using MyDiary.Data;
 
 /*
  *  TODO:
+ *      - Make UI nicer
  *     - Paging (for previous diary entries)
  *     - Remove code duplicaiton for add and edit tabs
  *      -- Can separate tabs into their own xamls?
@@ -61,6 +63,7 @@ namespace MyDiary
         }
 
         private readonly DiaryRepository _diaryRepository;
+        private readonly Settings _settings;
 
         public ICollectionView EntriesView { get; private set; }
 
@@ -84,11 +87,13 @@ namespace MyDiary
             }
         }
 
-        public MainWindow(DiaryRepository diaryRepository)
+        public MainWindow(DiaryRepository diaryRepository, IOptions<Settings> appSettings)
         {
             InitializeComponent();
 
             _diaryRepository = diaryRepository;
+            _settings = appSettings.Value;
+
             DataContext = this;
 
             resetDiaryEntryUI();
@@ -118,7 +123,7 @@ namespace MyDiary
 
         private async void loadDiaryEntries()
         {
-            var paged = await _diaryRepository.GetPagedEntriesAsync(_previousEntriesPageIndex, 2);
+            var paged = await _diaryRepository.GetPagedEntriesAsync(_previousEntriesPageIndex, _settings.PreviousDiaryEntriesPageSize);
 
             PreviousEntries = new ObservableCollection<DiaryEntryListItem>(paged.Items);
             _previousEntriesPageCount = paged.TotalPages;
