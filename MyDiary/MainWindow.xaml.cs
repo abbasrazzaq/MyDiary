@@ -19,7 +19,6 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *      - Disable edit entry tab item (enable when switching, and then disabling the others)
  *     - Updating paging when filtering (recalculate page index, page count etc)
  *     - Clean up and refactoring
             - Fix vs warnings
@@ -178,6 +177,16 @@ namespace MyDiary
             }
         }
 
+        private void switchToViewPreviousDiaries()
+        {
+            DiaryTabs.SelectedItem = previousEntriesTabItem;
+
+            editDiaryTabItem.IsEnabled = false;
+
+            newDiaryTabItem.IsEnabled = true;
+            previousEntriesTabItem.IsEnabled = true;
+        }
+
         private async void switchToDiaryEditing(int diaryId)
         {
             var entryToEdit = await _diaryRepository.GetEntryByIdAsync(diaryId);
@@ -207,6 +216,11 @@ namespace MyDiary
         {
             if (sender is Button btn && btn.Tag is int diaryId)
             {
+                editDiaryTabItem.IsEnabled = true;
+
+                newDiaryTabItem.IsEnabled = false;
+                previousEntriesTabItem.IsEnabled = false;
+
                 switchToDiaryEditing(diaryId);
             }
         }
@@ -240,7 +254,7 @@ namespace MyDiary
                 
             }
 
-            DiaryTabs.SelectedItem = previousEntriesTabItem;
+            switchToViewPreviousDiaries();
         }
 
         private void btnCancelUpdate_Click(object sender, RoutedEventArgs e)
@@ -253,7 +267,7 @@ namespace MyDiary
 
             if(confirmationResult == MessageBoxResult.Yes)
             {
-                DiaryTabs.SelectedItem = previousEntriesTabItem;
+                switchToViewPreviousDiaries();
             }
         }
 

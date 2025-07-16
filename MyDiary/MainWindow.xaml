@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
 
         <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
-            <TabItem>
+            <TabItem x:Name="newDiaryTabItem">
                 <TabItem.Header>
                     <TextBlock>New Diary</TextBlock>
                 </TabItem.Header>
@@ -94,7 +94,7 @@
                 </Grid>
 
             </TabItem>
-            <TabItem x:Name="editDiaryTabItem">
+            <TabItem x:Name="editDiaryTabItem" IsEnabled="False">
                 <TabItem.Header>
                     <TextBlock>Edit Entry</TextBlock>
                 </TabItem.Header>
