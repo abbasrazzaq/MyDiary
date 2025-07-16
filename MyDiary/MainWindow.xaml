@@ -64,16 +64,26 @@
                     <ListView Grid.Row="1" x:Name="previousEntriesListView" ItemsSource="{Binding EntriesView}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding DiaryDate}" />
-                                    <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button x:Name="deleteEntryBtn" Grid.Column="0" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
                                         Delete Entry
                                     </Button>
-                                    <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
+                                    <Button x:Name="viewEditEntryBtn" Grid.Column="1" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
                                         View / Edit Entry
                                     </Button>
-                                    <TextBlock Text="{Binding PlainDiaryText}" />
-                                </StackPanel>
+
+                                    <TextBlock Text="{Binding DiaryDate}" Grid.Column="2" Padding="5,0,0,0" />
+                                    
+                                    <TextBlock Text="{Binding PlainDiaryText}" Grid.Column="3" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                                </Grid>
+                                
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
