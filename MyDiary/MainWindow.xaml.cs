@@ -19,12 +19,12 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *     - Make UI nicer
+ *      - Disable edit entry tab item (enable when switching, and then disabling the others)
  *     - Updating paging when filtering (recalculate page index, page count etc)
- *     - Remove code duplicaiton for add and edit tabs
- *      -- Can separate tabs into their own xamls?
-       - Clean up and refactoring
+ *     - Clean up and refactoring
             - Fix vs warnings
+ *     - Remove code duplicaiton for add and edit tabs using UserControl
+
 *     - Don't allow adding of diary entry to the same date.
  *      
  *      

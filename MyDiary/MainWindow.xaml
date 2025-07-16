@@ -19,10 +19,7 @@
         <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
             <TabItem>
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="10" Height="10" Fill="DarkGray" />
-                        <TextBlock>New Diary</TextBlock>
-                    </StackPanel>
+                    <TextBlock>New Diary</TextBlock>
                 </TabItem.Header>
 
                 <Grid>
@@ -42,10 +39,7 @@
             </TabItem>
             <TabItem x:Name="previousEntriesTabItem">
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="10" Height="10" Fill="DarkBlue" />
-                        <TextBlock>Previous Entries</TextBlock>
-                    </StackPanel>
+                    <TextBlock>Previous Entries</TextBlock>
                 </TabItem.Header>
 
                 <Grid>
@@ -98,16 +92,11 @@
                     </Grid>
 
                 </Grid>
-                
-                
 
             </TabItem>
             <TabItem x:Name="editDiaryTabItem">
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="10" Height="10" Fill="DarkGreen" />
-                        <TextBlock>Edit Entry</TextBlock>
-                    </StackPanel>
+                    <TextBlock>Edit Entry</TextBlock>
                 </TabItem.Header>
 
                 <Grid>
@@ -117,14 +106,14 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Width="Auto">
-                        <Button x:Name="btnUpdate" Margin="0,5,0,0" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
-                        <Button x:Name="btnCancelUpdate" Margin="0,5,0,0" Click="btnCancelUpdate_Click" Width="Auto">Cancel</Button>
-                    </StackPanel>
-                    
-                    <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />
+                    <DatePicker Padding="1" Margin="10" Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" Width="Auto" HorizontalAlignment="Left"/>
 
-                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" TextChanged="updateTxtDiaryEntry_Changed" />
+                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" TextChanged="updateTxtDiaryEntry_Changed" />
+
+                    <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
+                        <Button x:Name="btnCancelUpdate" Padding="5" Margin="5" Click="btnCancelUpdate_Click" Width="Auto">Cancel</Button>
+                        <Button x:Name="btnUpdate" Padding="5" Margin="5" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
+                    </StackPanel>
 
                 </Grid>
 
