@@ -19,14 +19,13 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *     - Don't allow adding of diary entry to the same date.
  *     - Make UI nicer
+ *     - Updating paging when filtering (recalculate page index, page count etc)
  *     - Remove code duplicaiton for add and edit tabs
  *      -- Can separate tabs into their own xamls?
        - Clean up and refactoring
             - Fix vs warnings
-       - Don't allow setting of date that already has an entry.
-
+*     - Don't allow adding of diary entry to the same date.
  *      
  *      
  */

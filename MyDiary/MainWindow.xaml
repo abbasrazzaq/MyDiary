@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyDiary"
         mc:Ignorable="d"
-        Title="My Diary" Height="600" Width="800">
+        Title="My Diary" Height="300" Width="800">
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
@@ -48,10 +48,26 @@
                     </StackPanel>
                 </TabItem.Header>
 
-                <StackPanel Orientation="Vertical">
-                    <Label>Search Entries: </Label>
-                    <TextBox x:Name="SearchTxtBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListView x:Name="previousEntriesListView" ItemsSource="{Binding EntriesView}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Search TextBox -->
+                    <Grid Margin="10" VerticalAlignment="Center" Grid.Row="0">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Content="Search Entries:" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" x:Name="SearchTxtBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+
+                    <ListView Grid.Row="1" x:Name="previousEntriesListView" ItemsSource="{Binding EntriesView}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -67,12 +83,24 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Button x:Name="previousPageBtn"  Click="previousPageBtn_Click" IsEnabled="false">Previous Page</Button>
-                    <Button x:Name="nextPageBtn" Click="nextPageBtn_Click" IsEnabled="false">Next Page</Button>
-                </StackPanel>
+
+                    <Grid Margin="10" Grid.Row="2">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button HorizontalAlignment="Right" Padding="5" Margin="2" Grid.Column="1" x:Name="previousPageBtn" Content="Previous Page" Click="previousPageBtn_Click" IsEnabled="false" />
+                        <Button HorizontalAlignment="Right" Padding="5" Margin="2" Grid.Column="2" x:Name="nextPageBtn" Content="Next Page" Click="nextPageBtn_Click" IsEnabled="false" />
+
+                    </Grid>
+
+                </Grid>
                 
                 
-                
+
             </TabItem>
             <TabItem x:Name="editDiaryTabItem">
                 <TabItem.Header>
