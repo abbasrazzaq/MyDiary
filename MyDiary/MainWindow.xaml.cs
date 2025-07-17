@@ -19,6 +19,7 @@ using MyDiary.Data;
 
 /*
  *  TODO:
+ *     - Bug: PlainDiaryText not getting filled when adding entry (on UI, but it is in the db)
  *     - Updating paging when filtering (recalculate page index, page count etc)
  *     - Clean up and refactoring
             - Fix vs warnings
@@ -80,6 +81,8 @@ namespace MyDiary
             set
             {
                 _searchText = value;
+                _previousEntriesPageIndex = 0;
+                loadDiaryEntries();
                 OnPropertyChanged();
                 EntriesView.Refresh();
             }
@@ -121,7 +124,7 @@ namespace MyDiary
 
         private async void loadDiaryEntries()
         {
-            var paged = await _diaryRepository.GetPagedEntriesAsync(_previousEntriesPageIndex, _settings.PreviousDiaryEntriesPageSize);
+            var paged = await _diaryRepository.GetPagedEntriesAsync(_previousEntriesPageIndex, _settings.PreviousDiaryEntriesPageSize, _searchText);
 
             PreviousEntries = new ObservableCollection<DiaryEntryListItem>(paged.Items);
             _previousEntriesPageCount = paged.TotalPages;
@@ -141,10 +144,13 @@ namespace MyDiary
                 diaryDate = dateDiaryEntry.SelectedDate.Value;
             }
 
+            TextRange textRange = new TextRange(txtDiaryEntry.Document.ContentStart, txtDiaryEntry.Document.ContentEnd);
+
             // Add diary entry
             var newEntry = new Diary
             {
                 DiaryText = diaryEntryXaml,
+                DiaryTextPlain = textRange.Text.Replace('\r', ' ').Replace('\n', ' '),
                 DiaryDate = diaryDate,
             };
             await _diaryRepository.AddEntryAsync(newEntry);
@@ -242,8 +248,9 @@ namespace MyDiary
         {
             if(sender is Button btn && btn.Tag is int diaryId)
             {
-                string updatedXamlText = getXamlFromRichTextBox(updateTxtDiaryEntry);
-                await _diaryRepository.UpdateEntryAsync(diaryId, updatedXamlText);
+                string updatedXamlText = getXamlFromRichTextBox(updateTxtDiaryEntry).Replace('\r', ' ').Replace('\n', ' ');
+                TextRange textRange = new TextRange(updateTxtDiaryEntry.Document.ContentStart, updateTxtDiaryEntry.Document.ContentEnd);
+                await _diaryRepository.UpdateEntryAsync(diaryId, textRange.Text, updatedXamlText);
 
                 // Update the entry in the UI collection
                 var item = PreviousEntries.FirstOrDefault(x => x.DiaryId == diaryId);

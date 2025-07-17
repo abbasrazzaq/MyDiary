@@ -24,9 +24,14 @@ namespace MyDiary.Data
             _context = context;
         }
 
-        public async Task<PagedResult<DiaryEntryListItem>> GetPagedEntriesAsync(int pageIndex, int pageSize)
+        public async Task<PagedResult<DiaryEntryListItem>> GetPagedEntriesAsync(int pageIndex, int pageSize, string searchFilter)
         {
-            var query = _context.DiaryEntries.OrderByDescending(e => e.DiaryDate);
+            var query = _context.DiaryEntries.OrderByDescending(e => e.DiaryDate).AsQueryable();
+
+            if(!string.IsNullOrWhiteSpace(searchFilter))
+            {
+                query = query.Where(e => e.DiaryTextPlain.Contains(searchFilter));
+            }
 
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -38,7 +43,8 @@ namespace MyDiary.Data
                 {
                     DiaryId = x.DiaryId,
                     DiaryDate = x.DiaryDate,
-                    DiaryText = x.DiaryText
+                    DiaryText = x.DiaryText,
+                    PlainDiaryText = x.DiaryTextPlain
                 })
                 .ToListAsync();
 
@@ -63,12 +69,13 @@ namespace MyDiary.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateEntryAsync(int diaryId, string diaryEntryTextXaml)
+        public async Task UpdateEntryAsync(int diaryId, string diaryEntryText, string diaryEntryTextXaml)
         {
             var entry =  await _context.DiaryEntries.FirstOrDefaultAsync(d => d.DiaryId == diaryId);
             if (entry != null)
             {
                 entry.DiaryText = diaryEntryTextXaml;
+                entry.DiaryTextPlain = diaryEntryText;
                 await _context.SaveChangesAsync();
             }
         }
