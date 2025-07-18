@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
+        <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" SelectionChanged="diaryTabs_SelectionChanged">
             <TabItem x:Name="newDiaryTabItem">
                 <TabItem.Header>
                     <TextBlock>New Diary</TextBlock>

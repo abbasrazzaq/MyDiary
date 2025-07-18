@@ -19,7 +19,6 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *     - Bug: PlainDiaryText not getting filled when adding entry (on UI, but it is in the db)
  *     - Updating paging when filtering (recalculate page index, page count etc)
  *     - Clean up and refactoring
             - Fix vs warnings
@@ -98,7 +97,7 @@ namespace MyDiary
             DataContext = this;
 
             resetDiaryEntryUI();
-            loadDiaryEntries();
+            //loadDiaryEntries();
         }
 
         private bool filterDiaryEntries(object item)
@@ -155,7 +154,8 @@ namespace MyDiary
             };
             await _diaryRepository.AddEntryAsync(newEntry);
 
-            PreviousEntries.Insert(0, new DiaryEntryListItem { DiaryId = newEntry.DiaryId, DiaryDate = newEntry.DiaryDate });
+            //PreviousEntries.Insert(0, new DiaryEntryListItem { DiaryId = newEntry.DiaryId, DiaryDate = newEntry.DiaryDate, PlainDiaryText = newEntry.DiaryTextPlain });
+            //loadDiaryEntries();
 
             MessageBox.Show("Diary entry added!", "Notification");
             resetDiaryEntryUI();
@@ -331,6 +331,18 @@ namespace MyDiary
             }
         }
 
-
+        private void diaryTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.Source is TabControl)
+            {
+                var tabControl = (TabControl)e.Source;
+                var newTab = tabControl.SelectedItem as TabItem;
+                if(newTab != null && newTab == previousEntriesTabItem)
+                {
+                    _previousEntriesPageIndex = 0;
+                    loadDiaryEntries();
+                }
+            }
+        }
     }
 }
