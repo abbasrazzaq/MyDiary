@@ -14,8 +14,8 @@ namespace MyDiary
     /// </summary>
     public partial class App : Application
     {
-        public static IServiceProvider ServiceProvider { get; private set; }
-        public static IConfiguration Configuration { get; private set; }
+        public static IServiceProvider ServiceProvider { get; private set; } = default!;
+        public static IConfiguration Configuration { get; private set; } = default!;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -38,7 +38,6 @@ namespace MyDiary
                 options.UseSqlite(connectionString));
 
             // Register services
-            //services.AddSingleton<DiaryContext>();
             services.AddSingleton<DiaryRepository>();
 
             services.AddTransient<MainWindow>();
@@ -47,21 +46,10 @@ namespace MyDiary
             ServiceProvider = services.BuildServiceProvider();
             
 
-            //var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-            //mainWindow.Show();
             var loginWindow = ServiceProvider.GetRequiredService<LoginWindow>();
             loginWindow.Show();
 
 
-        }
-
-        private void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<DiaryContext>();
-            services.AddScoped<DiaryRepository>();
-
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<LoginWindow>();
         }
     }
 

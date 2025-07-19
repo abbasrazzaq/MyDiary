@@ -13,9 +13,6 @@ namespace MyDiary.Data
 
         public DbSet<User> Users { get; set; }
 
-
-        public string DbPath { get; }
-
         public DiaryContext(DbContextOptions<DiaryContext> options) : base(options)
         { }
 

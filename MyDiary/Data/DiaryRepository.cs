@@ -56,7 +56,7 @@ namespace MyDiary.Data
             };
         }
 
-        public async Task<Diary> GetEntryByIdAsync(int id)
+        public async Task<Diary?> GetEntryByIdAsync(int id)
         {
             return await Task.Run(() =>
                 _context.DiaryEntries.FirstOrDefault(x => x.DiaryId == id)
@@ -90,9 +90,9 @@ namespace MyDiary.Data
             }
         }
 
-        public async Task<string> GetUserPasswordHash(string username)
+        public async Task<string?> GetUserPasswordHash(string username)
         {
-            string passwordHash = null;
+            string? passwordHash = null;
             var user = await _context.Users.FirstOrDefaultAsync(d => d.Username == username);
             if (user != null)
             {
