@@ -17,12 +17,7 @@ namespace MyDiary.Data
         public string DbPath { get; }
 
         public DiaryContext(DbContextOptions<DiaryContext> options) : base(options)
-        {
-            //var folder = Environment.SpecialFolder.LocalApplicationData;
-            //var path = Environment.GetFolderPath(folder);
-
-            //DbPath = System.IO.Path.Join(path, "diary.db");
-        }
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

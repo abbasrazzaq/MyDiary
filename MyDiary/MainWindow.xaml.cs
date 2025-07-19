@@ -19,14 +19,11 @@ using MyDiary.Data;
 
 /*
  *  TODO:
- *     - Updating paging when filtering (recalculate page index, page count etc)
  *     - Clean up and refactoring
             - Fix vs warnings
  *     - Remove code duplicaiton for add and edit tabs using UserControl
 
-*     - Don't allow adding of diary entry to the same date.
- *      
- *      
+*     - Don't allow adding of diary entry to the same date.   
  */
 
 namespace MyDiary
@@ -79,9 +76,11 @@ namespace MyDiary
             get => _searchText;
             set
             {
+                
                 _searchText = value;
                 _previousEntriesPageIndex = 0;
                 loadDiaryEntries();
+
                 OnPropertyChanged();
                 EntriesView.Refresh();
             }
@@ -97,7 +96,6 @@ namespace MyDiary
             DataContext = this;
 
             resetDiaryEntryUI();
-            //loadDiaryEntries();
         }
 
         private bool filterDiaryEntries(object item)
@@ -135,27 +133,22 @@ namespace MyDiary
         private async void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             string diaryEntryXaml = getXamlFromRichTextBox(txtDiaryEntry);
+            string diaryEntryPlain = getSingleLineTextFromRichTextBox(txtDiaryEntry);
             DateTime diaryDate = DateTime.Now;
             
-            // TODO: Check if not selected and asks user to enter a date
             if(dateDiaryEntry.SelectedDate is not null)
             {
                 diaryDate = dateDiaryEntry.SelectedDate.Value;
             }
 
-            TextRange textRange = new TextRange(txtDiaryEntry.Document.ContentStart, txtDiaryEntry.Document.ContentEnd);
-
             // Add diary entry
             var newEntry = new Diary
             {
                 DiaryText = diaryEntryXaml,
-                DiaryTextPlain = textRange.Text.Replace('\r', ' ').Replace('\n', ' '),
+                DiaryTextPlain = diaryEntryPlain,
                 DiaryDate = diaryDate,
             };
             await _diaryRepository.AddEntryAsync(newEntry);
-
-            //PreviousEntries.Insert(0, new DiaryEntryListItem { DiaryId = newEntry.DiaryId, DiaryDate = newEntry.DiaryDate, PlainDiaryText = newEntry.DiaryTextPlain });
-            //loadDiaryEntries();
 
             MessageBox.Show("Diary entry added!", "Notification");
             resetDiaryEntryUI();
@@ -174,11 +167,8 @@ namespace MyDiary
                 {
                     await _diaryRepository.DeleteEntryAsync(diaryId);
 
-                    var itemToRemove = PreviousEntries.FirstOrDefault(i => i.DiaryId == diaryId);
-                    if (itemToRemove != null)
-                    {
-                        PreviousEntries.Remove(itemToRemove);
-                    }
+                    _previousEntriesPageIndex = 0;
+                    loadDiaryEntries();
                 }
             }
         }
@@ -248,9 +238,10 @@ namespace MyDiary
         {
             if(sender is Button btn && btn.Tag is int diaryId)
             {
-                string updatedXamlText = getXamlFromRichTextBox(updateTxtDiaryEntry).Replace('\r', ' ').Replace('\n', ' ');
-                TextRange textRange = new TextRange(updateTxtDiaryEntry.Document.ContentStart, updateTxtDiaryEntry.Document.ContentEnd);
-                await _diaryRepository.UpdateEntryAsync(diaryId, textRange.Text, updatedXamlText);
+                string updatedXamlText = getXamlFromRichTextBox(updateTxtDiaryEntry);
+                string updatePlainText = getSingleLineTextFromRichTextBox(updateTxtDiaryEntry);
+
+                await _diaryRepository.UpdateEntryAsync(diaryId, updatePlainText, updatedXamlText);
 
                 // Update the entry in the UI collection
                 var item = PreviousEntries.FirstOrDefault(x => x.DiaryId == diaryId);
@@ -286,6 +277,11 @@ namespace MyDiary
             }
         }
 
+        private string getSingleLineTextFromRichTextBox(RichTextBox richTextBox)
+        {
+            TextRange textRange = new TextRange(txtDiaryEntry.Document.ContentStart, txtDiaryEntry.Document.ContentEnd);
+            return textRange.Text.Replace('\r', ' ').Replace('\n', ' ');
+        }
 
         private string getXamlFromRichTextBox(RichTextBox richTextBox)
         {

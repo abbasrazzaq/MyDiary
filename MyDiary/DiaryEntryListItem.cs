@@ -23,18 +23,11 @@ namespace MyDiary
             {
                 _diaryText = value;
                 OnPropertyChanged(nameof(DiaryText));
-                //OnPropertyChanged(nameof(PlainDiaryText));
-                
             }
         }
 
         public string PlainDiaryText
         {
-            //get
-            //{
-            //    //return RichTextHelpers.XamlToPlainText(this.DiaryText).Replace('\n', ' ').Replace('\r', ' ');
-            //}
-
             get => _plainDiaryText;
             set
             {
