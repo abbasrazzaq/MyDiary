@@ -35,7 +35,7 @@ namespace MyDiary
 
         private async void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            string storedPasswordHash = await _diaryRepository.GetUserPasswordHash(usernameTextBox.Text);
+            string? storedPasswordHash = await _diaryRepository.GetUserPasswordHash(usernameTextBox.Text);
 
             if(storedPasswordHash == null || !PasswordHasher.VerifyPassword(passwordBox.Password, storedPasswordHash))
             {

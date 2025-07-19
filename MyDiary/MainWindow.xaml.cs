@@ -37,7 +37,7 @@ namespace MyDiary
         private int _previousEntriesPageIndex = 0;
         private int _previousEntriesPageCount = 0;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -65,7 +65,6 @@ namespace MyDiary
         private void SetupCollectionView()
         {
             EntriesView = CollectionViewSource.GetDefaultView(PreviousEntries);
-            EntriesView.Filter = filterDiaryEntries;
 
             OnPropertyChanged(nameof(EntriesView));
         }
@@ -96,17 +95,8 @@ namespace MyDiary
             DataContext = this;
 
             resetDiaryEntryUI();
-        }
 
-        private bool filterDiaryEntries(object item)
-        {
-            if(item is DiaryEntryListItem entry)
-            {
-                return string.IsNullOrEmpty(SearchText)
-                || entry.PlainDiaryText?.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0;
-            }
-
-            return false;
+            _searchText = string.Empty;
         }
 
         private void resetDiaryEntryUI()
@@ -248,6 +238,7 @@ namespace MyDiary
                 if(item  != null)
                 {
                     item.DiaryText = updatedXamlText;
+                    item.PlainDiaryText = updatePlainText;
                 }
                 
             }
