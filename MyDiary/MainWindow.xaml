@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyDiary"
         mc:Ignorable="d"
-        Title="My Diary" Height="600" Width="800">
+        Title="My Diary" Height="300" Width="800">
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
@@ -16,13 +16,10 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
-            <TabItem>
+        <TabControl x:Name="DiaryTabs"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" SelectionChanged="diaryTabs_SelectionChanged">
+            <TabItem x:Name="newDiaryTabItem">
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="10" Height="10" Fill="DarkGray" />
-                        <TextBlock>New Diary</TextBlock>
-                    </StackPanel>
+                    <TextBlock>New Diary</TextBlock>
                 </TabItem.Header>
 
                 <Grid>
@@ -32,54 +29,17 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Row="2" x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Diary Entry</Button>
-                    <DatePicker Grid.Row="0" x:Name="dateDiaryEntry" IsTodayHighlighted="true" SelectedDateChanged="dateDiaryEntry_SelectedDateChanged" />
+                    <DatePicker Grid.Row="0" Padding="1" Margin="10" x:Name="dateDiaryEntry" IsTodayHighlighted="true" SelectedDateChanged="dateDiaryEntry_SelectedDateChanged" Width="Auto" HorizontalAlignment="Left" />
 
                     <RichTextBox Grid.Row="1" x:Name="txtDiaryEntry" Height="Auto" />
 
+                    <Button Grid.Row="2" x:Name="btnAdd" Padding="5" Margin="5" Click="btnAdd_Click" Content="Add Entry" Width="Auto" HorizontalAlignment="Right" />
                 </Grid>
                 
             </TabItem>
             <TabItem x:Name="previousEntriesTabItem">
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="10" Height="10" Fill="DarkBlue" />
-                        <TextBlock>Previous Entries</TextBlock>
-                    </StackPanel>
-                </TabItem.Header>
-
-                <StackPanel Orientation="Vertical">
-                    <Label>Search Entries: </Label>
-                    <TextBox x:Name="SearchTxtBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListView x:Name="previousEntriesListView" ItemsSource="{Binding EntriesView}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding DiaryDate}" />
-                                    <Button x:Name="deleteEntryBtn" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}">
-                                        Delete Entry
-                                    </Button>
-                                    <Button x:Name="viewEditEntryBtn" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}">
-                                        View / Edit Entry
-                                    </Button>
-                                    <TextBlock Text="{Binding PlainDiaryText}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <Button x:Name="previousPageBtn"  Click="previousPageBtn_Click" IsEnabled="false">Previous Page</Button>
-                    <Button x:Name="nextPageBtn" Click="nextPageBtn_Click" IsEnabled="false">Next Page</Button>
-                </StackPanel>
-                
-                
-                
-            </TabItem>
-            <TabItem x:Name="editDiaryTabItem">
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="10" Height="10" Fill="DarkGreen" />
-                        <TextBlock>Edit Entry</TextBlock>
-                    </StackPanel>
+                    <TextBlock>Previous Entries</TextBlock>
                 </TabItem.Header>
 
                 <Grid>
@@ -89,14 +49,77 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Width="Auto">
-                        <Button x:Name="btnUpdate" Margin="0,5,0,0" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
-                        <Button x:Name="btnCancelUpdate" Margin="0,5,0,0" Click="btnCancelUpdate_Click" Width="Auto">Cancel</Button>
-                    </StackPanel>
-                    
-                    <DatePicker Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" />
+                    <!-- Search TextBox -->
+                    <Grid Margin="10" VerticalAlignment="Center" Grid.Row="0">
 
-                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" Height="Auto" TextChanged="updateTxtDiaryEntry_Changed" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Content="Search Entries:" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" x:Name="SearchTxtBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+
+                    <ListView Grid.Row="1" x:Name="previousEntriesListView" ItemsSource="{Binding EntriesView}" MouseDoubleClick="PreviousEntriesList_MouseDoubleClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Content="Delete" x:Name="deleteEntryBtn" Grid.Column="0" Click="deleteEntryBtn_Click" Tag="{Binding DiaryId}" />
+                                    <Button Content="View / Edit" x:Name="viewEditEntryBtn" Grid.Column="1" Click="viewEditEntryBtn_Click" Tag="{Binding DiaryId}" />
+
+                                    <TextBlock Text="{Binding DiaryDate}" Grid.Column="2" Padding="5,0,0,0" />
+                                    
+                                    <TextBlock Text="{Binding PlainDiaryText}" Grid.Column="3" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                                </Grid>
+                                
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Grid Margin="10" Grid.Row="2">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button HorizontalAlignment="Right" Padding="5" Margin="2" Grid.Column="1" x:Name="previousPageBtn" Content="Previous Page" Click="previousPageBtn_Click" IsEnabled="false" />
+                        <Button HorizontalAlignment="Right" Padding="5" Margin="2" Grid.Column="2" x:Name="nextPageBtn" Content="Next Page" Click="nextPageBtn_Click" IsEnabled="false" />
+
+                    </Grid>
+
+                </Grid>
+
+            </TabItem>
+            <TabItem x:Name="editDiaryTabItem" IsEnabled="False">
+                <TabItem.Header>
+                    <TextBlock>Edit Entry</TextBlock>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <DatePicker Padding="1" Margin="10" Grid.Row="0" x:Name="dudDateDiaryEntry" IsTodayHighlighted="true" IsEnabled="False" Width="Auto" HorizontalAlignment="Left"/>
+
+                    <RichTextBox Grid.Row="1" x:Name="updateTxtDiaryEntry" TextChanged="updateTxtDiaryEntry_Changed" />
+
+                    <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
+                        <Button x:Name="btnCancelUpdate" Padding="5" Margin="5" Click="btnCancelUpdate_Click" Width="Auto">Cancel</Button>
+                        <Button x:Name="btnUpdate" Padding="5" Margin="5" Click="btnUpdate_Click" Width="Auto">Update Diary Entry</Button>
+                    </StackPanel>
 
                 </Grid>
 

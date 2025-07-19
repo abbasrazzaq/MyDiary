@@ -12,9 +12,9 @@ namespace MyDiary.Data
         public int UserId { get; set; }
 
         [Required]
-        public string Username { get; set; }
+        public required string Username { get; init; }
 
         [Required]
-        public string PasswordHash { get; set; }
+        public required string PasswordHash { get; init; }
     }
 }

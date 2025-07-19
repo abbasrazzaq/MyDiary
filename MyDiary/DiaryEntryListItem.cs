@@ -14,6 +14,8 @@ namespace MyDiary
         public int DiaryId {  get; set; }
         public DateTime DiaryDate {  get; set; }
         private string _diaryText;
+        private string _plainDiaryText;
+
         public string DiaryText 
         {
             get => _diaryText;
@@ -21,20 +23,20 @@ namespace MyDiary
             {
                 _diaryText = value;
                 OnPropertyChanged(nameof(DiaryText));
-                OnPropertyChanged(nameof(PlainDiaryText));
-                
             }
         }
 
         public string PlainDiaryText
         {
-            get
+            get => _plainDiaryText;
+            set
             {
-                return RichTextHelpers.XamlToPlainText(this.DiaryText).Replace('\n', ' ').Replace('\r', ' ');
+                _plainDiaryText = value;
+                OnPropertyChanged(nameof(PlainDiaryText));
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

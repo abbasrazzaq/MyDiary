@@ -49,13 +49,15 @@ namespace MyDiary.Tests
                 context.DiaryEntries.Add(new Diary
                 {
                     DiaryId = 1,
-                    DiaryText = "Test"
+                    DiaryText = "Test",
+                    DiaryTextPlain = "Test"
                 });
 
                 context.DiaryEntries.Add(new Diary
                 {
                     DiaryId = 2,
-                    DiaryText = "Test 2"
+                    DiaryText = "Test 2",
+                    DiaryTextPlain = "Test 2"
                 });
 
                 context.SaveChanges();

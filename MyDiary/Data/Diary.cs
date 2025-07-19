@@ -11,5 +11,7 @@ namespace MyDiary.Data
         public int DiaryId { get; set; }
         public DateTime DiaryDate { get; set; }
         public required string DiaryText { get; set; }
+
+        public required string DiaryTextPlain { get; set; }
     }
 }
