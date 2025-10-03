@@ -10,11 +10,45 @@ namespace MyDiary.Tests
 {
     public class DiaryRepositoryTests
     {
+
+        [Fact]
+        public async void UpdateEntryAsync_UpdatesEntryCorrectly()
+        {
+            var options = new DbContextOptionsBuilder<DiaryContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new DiaryContext(options);
+
+            var diary = new Diary
+            {
+                DiaryId = 1,
+                DiaryDate = DateTime.Today,
+                DiaryText = "Original XAML",
+                DiaryTextPlain = "Original Plain"
+            };
+            context.DiaryEntries.Add(diary);
+            await context.SaveChangesAsync();
+
+            var repository = new DiaryRepository(context);
+
+            // Act
+            string newPlainText = "Updated Plain";
+            string newXamlText = "Updated XAML";
+            await repository.UpdateEntryAsync(diary.DiaryId, newPlainText, newXamlText);
+
+            // Assert
+            var updateDiary = await context.DiaryEntries.FirstOrDefaultAsync(d => d.DiaryId == diary.DiaryId);
+            Assert.NotNull(updateDiary);
+            Assert.Equal(newPlainText, updateDiary.DiaryTextPlain);
+            Assert.Equal(newXamlText, updateDiary.DiaryText);
+        }
+
         [Fact]
         public async void GetUserPasswordHash_ReturnsCorrectHash()
         {
             var options = new DbContextOptionsBuilder<DiaryContext>()
-                .UseInMemoryDatabase("Test_Diarydb")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             using (var context = new DiaryContext(options))
@@ -41,7 +75,7 @@ namespace MyDiary.Tests
         public async void DeleteEntryAsync_DeletesCorrectEntry()
         {
             var options = new DbContextOptionsBuilder<DiaryContext>()
-                .UseInMemoryDatabase("Test_Diarydb")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             using (var context = new DiaryContext(options))
