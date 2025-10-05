@@ -10,6 +10,39 @@ namespace MyDiary.Tests
 {
     public class DiaryRepositoryTests
     {
+        /*
+         * TODO Tests for
+         *   - GetPagedEntriesAsync with search filer
+         * */
+
+        [Fact]
+        public async void GetPagedEntriesAsync_ReturnsCorrectEntries()
+        {
+            var options = new DbContextOptionsBuilder<DiaryContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using var context = new DiaryContext(options);
+            var diaryEntries = new List<Diary>
+            {
+                new Diary { DiaryId = 1, DiaryDate = DateTime.Today,                DiaryText = "Entry 1", DiaryTextPlain = "Entry 1" },
+                new Diary { DiaryId = 2, DiaryDate = DateTime.Today.AddDays(-1),    DiaryText = "Entry 2", DiaryTextPlain = "Entry 2" },
+                new Diary { DiaryId = 3, DiaryDate = DateTime.Today.AddDays(-2),    DiaryText = "Entry 3", DiaryTextPlain = "Entry 3" },
+                new Diary { DiaryId = 4, DiaryDate = DateTime.Today.AddDays(-3),    DiaryText = "Entry 4", DiaryTextPlain = "Entry 4" },
+            };
+            context.DiaryEntries.AddRange(diaryEntries);
+            await context.SaveChangesAsync();
+
+            var repository = new DiaryRepository(context);
+
+            // Act
+            var page1 = await repository.GetPagedEntriesAsync(0, 2, string.Empty);
+            var page2 = await repository.GetPagedEntriesAsync(1, 2, string.Empty);
+
+            // Assert
+            Assert.Equal(diaryEntries.GetRange(0, 2).Select(e => e.DiaryId), page1.Items.Select(e => e.DiaryId));
+            Assert.Equal(diaryEntries.GetRange(2, 2).Select(e => e.DiaryId), page2.Items.Select(e => e.DiaryId));
+        }
 
         [Fact]
         public async void UpdateEntryAsync_UpdatesEntryCorrectly()
@@ -18,7 +51,7 @@ namespace MyDiary.Tests
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new DiaryContext(options);
+            using var context = new DiaryContext(options);
 
             var diary = new Diary
             {
